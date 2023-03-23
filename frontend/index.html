@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+        integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
+        crossorigin="anonymous"></script>
+
+        <title>CW3</title>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1 class="headline text-center">Lessons Spaces</h1>
+        </div>
+    
+        <div id="app">
+    
+            <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+                <div class="container">
+                    <button class="navbar-light" @click="ShowCart">
+                        <span>CART {{ calcCart }}
+                    </button>
+                </div>
+            </nav>
+    
+            <div v-if="showRegistration===false && showProducts===true">
+    
+                <div class="container">
+                    <select class="form-select" multiple aria-label="multiple select example" id="sortBy" v-model="sortBy"
+                        @change="SortingInvoke">
+                        <option value="name">Name</option>
+                        <option value="price">Price</option>
+                        <option value="location">location</option>
+                        <option value="spaces">spaces</option>
+                    </select>
+    
+                    <label>
+                        <input type="radio" v-model="sortOrder" name="sortOrder" value="1" @change="SortingInvoke" checked>
+                        Ascending
+                    </label>
+    
+                    <label>
+                        <input type="radio" v-model="sortOrder" name="sortOrder" value="-1" @change="SortingInvoke">
+                        Descending
+                    </label>
+                </div>
+    
+                <div class="container">Search <input type="text" v-model="searchTerm" @keyup="searchLessons">
+                    
+                    <div class="container">
+                        <div class="row" v-if="searchTerm.length > 0" >
+                            <i>Search Results:</i>
+                            <div v-for="a in searchedlesson" style="margin:2px"
+                                class="col-2 card">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div><u>{{ a.name }}</u></div>
+                                        <div>Price: £{{ a.price }}</div>
+                                        <div>Spaces: {{ a.spaces }}</div>
+                                        <div>Location: {{ a.location }}</div>
+                                        <button v-if="a.spaces > 0" @click="addCart(a)">ADD CART</button>
+                                    </div>
+                                    <div class="col-4">
+                                        <img v-bind:src='a.image' width="95%" alt="" class="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="container">
+                    <div class="row">
+                        <div v-for="les in lessons" style="margin:2px" class="col-2 card">
+                            <div class="row">
+                                <div class="col-10">
+                                    <img v-bind:src='les.image' style="margin: 0px; width: 50% !important;" alt="" class="">
+                                    <div><u>{{ les.name }}</u></div>
+                                    <div>Price: £{{ les.price }}</div>
+                                    <div>Spaces: {{ les.spaces }}</div>
+                                    <div>Location: {{ les.location }}</div>
+                                </div>
+                            </div>
+                            <button v-if="les.spaces > 0" @click="addCart(les)">ADD CART</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else-if="showRegistration===false && showProducts===false">
+                <div class="container">
+                    <h4>Cart</h4>
+                    <div v-for="ca in cart" class="card">
+                        <div class="col-8">
+                            <div><u>{{ ca.name }}</u></div>
+                            <div>Price: £{{ ca.price }}</div>
+                            <div>Qty: {{ ca.qty }}</div>
+                            <div>Location: {{ ca.location }}</div>
+                        </div>
+                        <br>
+                        <button @click="remCart(ca)">Remove Item</button>
+                    </div>
+                    <br>
+                    <div v-if="cart.length > 0">
+                        Name <br> <input type="text" v-model="name" name="name" id="name"><br>
+                        Phone <br> <input type="phone" v-model="phone" name="phone" id="phone"><br>
+                        Password <br> <input type="password" v-model="password" name="password" id="password"><br>
+                        Email <br> <input type="email" v-model="email" name="email" value="abc.xyz@gmail.com"><br>
+                        <input type="button" @click="proceedOrder()" value="Proceed Order...!">
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div v-else>
+                user
+            </div>
+    
+    
+        </div>
+    
+    
+    </body>
+    
+    <script>
+    
+        let app = new Vue({
+            el: '#app',
+            data: {
+                lessons: [],
+                showProducts: true,
+                showRegistration: false,
+                searchedlesson: [],
+                cart: [],
+                showProduct: true, 
+                searchTerm: '',
+                sortBy: "name",
+                sortOrder: "1",
+                sortEnabled: true,
+                sortlessons: [],
+                orders: [],
+                name: "",
+                email: "",
+                password: "",
+                phone: "",
+    
+            },
+            
+        created: function () {
+
+fetch("http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com/").then(
+    function (response) {
+        response.json().then(
+            function (json) {
+                app.lessons = json;
+            }
+        )
+
+    })
+},
+methods: {
+async proceedOrder() {
+
+    this.orders.push({
+        name: this.name,
+        email: this.email,
+        phone: this.phone,
+        cart: this.cart,
+    })
+
+
+
+    const user = await fetch('http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com//api/users/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: this.name,
+            email: this.email,
+            phone: this.phone,
+            password: this.password,
+        })
+    });
+
+    if (!user.ok) {
+        alert(res.statusText);
+    }
+
+    const res = await fetch('http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com/api/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.orders)
+    });
+
+    if (!res.ok) {
+        alert(res.statusText);
+    }
+
+  
+
+    this.cart.forEach(async item => {
+
+        let response = await fetch("http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com//api/lessons/" + item._id);
+        let json = await response.json();
+
+        let a = json[0].spaces;
+
+        console.log(json[0].spaces);
+
+        a = a - item.qty;
+
+        let d_data = {
+            spaces: a
+        }
+
+        const res_put = await fetch('http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com//api/lessons/' + item._id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(d_data)
+        });
+
+    })
+
+
+    this.orders = [];
+    this.cart = [];
+    name = "";
+    email = "";
+
+    alert("Order Confirmed!")
+
+},
+searchLessons: function () {
+    fetch(`http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com/api/find/lessons/${this.searchTerm}`).then(
+        function (response) {
+            response.json().then(
+                function (json) {
+                    app.searchedlesson = json;
+                }
+            )
+        }
+    );
+},
+SortingInvoke: function () {
+
+    fetch(`http://serverapp-env.eba-ksjdpycm.eu-west-2.elasticbeanstalk.com/api/sort/lessons/${this.sortBy}/${this.sortOrder}`).then(
+
+        function (response) {
+
+            response.json().then(
+                function (json) {
+                    app.lessons = json;
+                }
+            )
+        }
+    );
+},
+ShowCart: function () {
+    if (this.showProducts === true)
+        this.showProducts = false;
+    else this.showProducts = true;
+},
+remCart: function (p) {
+
+    app.cart = app.cart.filter(item => item._id !== p._id);
+  
+
+    let spacesAdjust = this.lessons.find(it => it._id === p._id);
+    if (spacesAdjust) {
+        spacesAdjust.spaces += p.qty;
+    }
+
+},
+addCart: function (p) {
+
+    let obj = {
+        "_id": p._id,
+        "name": p.name,
+        "image": p.image,
+        "location": p.location,
+        "price": p.price,
+        "qty": 1,
+        "cost": p.price,
+    };
+
+    p.spaces -= 1;
+
+    let exists = false;
+    if (app.cart.length === 0) {
+        app.cart.push(obj);
+    } else {
+        app.cart.forEach(item => {
+            if (item._id === obj._id) {
+                item.qty++;
+                item.cost = item.price * item.qty;
+                exists = true;
+                return;
+            }
+        });
+        if (!exists) {
+            app.cart.push(obj);
+        }
+    }
+
+    this.calcCart;
+
+},
+},
+computed: {
+calcCart: function () {
+    return this.cart.length;
+},
+},
+watch: {
+searchTerm: function (newTerm) {
+    if (newTerm.length > 0) {
+        this.searchLessons();
+    }
+}
+}
+});
+
+</script>
+
+</html>
