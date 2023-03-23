@@ -13,3 +13,4 @@
 https://github.com/jeremyarland/mobileCW3appfinal.git
 
 # git hub link page
+https://github.com/jeremyarland/mobileCW3appfinal/blob/master/README.md
